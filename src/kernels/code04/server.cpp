@@ -4,7 +4,6 @@
 #include "../socket_kernels.h"
 #include "Epoll.h"
 
-#define MAX_EVENTS 1024
 #define READ_BUFFER 1024
 using namespace std;
 
@@ -37,6 +36,7 @@ void handleReadEvent(int sockfd){
 int main(int argc,char *argv[]) {
 	Errif(argc !=2,"Please input format as ./server <port>");
 	int sockfd = Open_listenfd(argv[1]);
+	cout << "i am in main and fd is " << sockfd << endl;
 
 	Epoll *ep = new Epoll();
 	setnonblocking(sockfd);
@@ -53,6 +53,7 @@ int main(int argc,char *argv[]) {
                 socklen_t clnt_addr_len = sizeof(clnt_addr);
 
                 int clnt_sockfd = accept(sockfd, (sockaddr*)&clnt_addr, &clnt_addr_len);
+				std::cout << "clnt_sockfd is " << clnt_sockfd<< endl;
                 Errif(clnt_sockfd == -1, "socket accept error");
                 printf("new client fd %d! IP: %s Port: %d\n", clnt_sockfd, inet_ntoa(clnt_addr.sin_addr), ntohs(clnt_addr.sin_port));
                 setnonblocking(clnt_sockfd);

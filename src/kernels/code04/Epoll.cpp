@@ -14,7 +14,7 @@ Epoll::Epoll() : epfd(-1),events(nullptr) {
 	epfd = epoll_create1(0);
 	Errif(epfd == -1,"epoll create error");
 	events = new epoll_event[MAX_EVENTS];
-	memset(&events,0,sizeof(events));
+	memset(events,0,sizeof(struct epoll_event)*MAX_EVENTS);
 }
 
 Epoll::~Epoll(){
@@ -36,7 +36,7 @@ void Epoll::addFd(int fd,uint32_t op){
 std::vector<epoll_event> Epoll::poll(int timeout){
 	std::vector<epoll_event> activeEvents;
 	int nfds = epoll_wait(epfd,events,MAX_EVENTS,timeout);
-	std::cout << "i am in poll,nfds is "<< nfds << std::endl;
+	Errif(nfds == -1,"epoll wait error");
 	for(int i = 0;i<nfds;++i){
 		activeEvents.push_back(events[i]);
 	}
